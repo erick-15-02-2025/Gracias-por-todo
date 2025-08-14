@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pucca abraza a Garu - Agradecimiento</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at center, #ff69b4, #b83280, #301934);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-attachment: fixed;
+    }
+
+    #container {
+      width: 650px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      padding: 15px 30px 30px 30px;
+      margin-top: 30px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.3);
+    }
+
+    h1 {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 15px;
+      text-shadow: 3px 3px 10px #ff69b4;
+    }
+
+    #scene {
+      position: relative;
+      width: 600px;
+      height: 300px;
+      border: 3px solid #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      overflow: hidden;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 0 20px #fff;
+    }
+
+    .character, .hug {
+      position: absolute;
+      bottom: 0;
+      width: 100px;
+      height: 150px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      transition: opacity 0.8s ease;
+    }
+
+    #pucca {
+      left: 20px;
+      background-image: url('pucca-running.png');
+      z-index: 2;
+    }
+
+    #garu {
+      right: 20px;
+      background-image: url('garu-normal.png');
+      z-index: 2;
+    }
+
+    #hug {
+      left: 460px;
+      display: none;
+      width: 120px;
+      height: 160px;
+      background-image: url('pucca-garu-abrazo.png');
+      background-size: cover;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .letter {
+      position: absolute;
+      bottom: 120px;
+      font-size: 1.8rem;
+      font-family: 'Permanent Marker', cursive;
+      color: #ff3cac;
+      text-shadow: 2px 2px 8px #000;
+      opacity: 0;
+      animation: appear 0.5s forwards;
+      transform: rotate(-5deg);
+    }
+
+    @keyframes appear {
+      to {
+        opacity: 1;
+        transform: scale(1.2) rotate(0deg);
+      }
+    }
+
+    /* Estilo modificado para #carta */
+    #carta {
+      background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(50,0,50,0.6));
+      color: #f8e8f8;
+      font-size: 1.15rem;
+      border-radius: 15px;
+      padding: 25px 30px;
+      box-shadow: 0 0 15px #bb33aa99, inset 0 0 10px #ff7fedcc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      white-space: pre-line;
+      text-shadow: 1px 1px 4px #330033bb;
+      line-height: 1.5;
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff4da6;
+      transform: rotate(45deg);
+      animation: floatUp 2s ease-out forwards;
+      opacity: 0.8;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff4da6;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        bottom: 120px;
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(45deg);
+      }
+      100% {
+        bottom: 250px;
+        opacity: 0;
+        transform: translateY(-50px) scale(1.5) rotate(45deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 🎵 Música de fondo -->
+  <audio src="mi-musica.mp3" autoplay loop hidden></audio>
+
+  <!-- 💞 Efecto de abrazo -->
+  <audio id="hug-sound">
+    <source src="https://www.myinstants.com/media/sounds/kiss.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="container">
+    <h1>Gracias por todo</h1>
+    <div id="scene">
+      <div id="pucca" class="character"></div>
+      <div id="garu" class="character"></div>
+      <div id="hug" class="hug"></div>
+    </div>
+    <div id="carta">
+      Querida Pucca,<br><br>
+      Gracias por todos los momentos compartidos, las risas, y las aventuras que vivimos juntos. <br>
+      Este pequeño detalle es para recordarte lo especial que fuiste para mí.<br><br>
+      ¡Te deseo todo lo mejor en tu camino!<br><br>
+      Con cariño,<br>
+      Tu Garuto
+    </div>
+  </div>
+
+<script>
+  const pucca = document.getElementById('pucca');
+  const garu = document.getElementById('garu');
+  const hug = document.getElementById('hug');
+  const scene = document.getElementById('scene');
+  const hugSound = document.getElementById('hug-sound');
+  const message = "Te quiero mucho";
+  let puccaPos = 20;
+  const finalPos = 460;
+  let messageIndex = 0;
+
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.style.left = (finalPos + 50 + Math.random() * 20 - 10) + 'px';
+    scene.appendChild(heart);
+    setTimeout(() => heart.remove(), 2000);
+  }
+
+  function showHearts() {
+    let count = 0;
+    const interval = setInterval(() => {
+      createHeart();
+      count++;
+      if (count > 15) clearInterval(interval);
+    }, 150);
+  }
+
+  function fadeIn(el) {
+    el.style.display = 'block';
+    setTimeout(() => el.style.opacity = 1, 50);
+  }
+
+  function fadeOut(el) {
+    el.style.opacity = 0;
+    setTimeout(() => el.style.display = 'none', 800);
+  }
+
+  function movePucca() {
+    if (puccaPos < finalPos) {
+      puccaPos += 10;
+      pucca.style.left = puccaPos + 'px';
+
+      if (messageIndex < message.length && puccaPos % 30 === 0) {
+        const span = document.createElement('span');
+        span.className = 'letter';
+        span.textContent = message.charAt(messageIndex);
+        span.style.left = (puccaPos + 20) + 'px';
+        scene.appendChild(span);
+        messageIndex++;
+      }
+
+      setTimeout(movePucca, 100);
+    } else {
+      fadeOut(pucca);
+      fadeOut(garu);
+      fadeIn(hug);
+      hugSound.play();
+      showHearts();
+
+      setTimeout(() => {
+        fadeOut(hug);
+        puccaPos = 20;
+        pucca.style.left = puccaPos + 'px';
+        pucca.style.opacity = 1;
+        garu.style.opacity = 1;
+        pucca.style.display = 'block';
+        garu.style.display = 'block';
+        messageIndex = 0;
+
+        const letters = document.querySelectorAll('.letter');
+        letters.forEach(l => l.remove());
+
+        setTimeout(movePucca, 1000);
+      }, 2500);
+    }
+  }
+
+  setTimeout(movePucca, 1000);
+</script>
+</body>
+</html>
